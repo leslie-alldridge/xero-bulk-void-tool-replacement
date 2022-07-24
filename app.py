@@ -15,6 +15,7 @@ XERO_TOKEN_URL = "https://identity.xero.com/connect/token"
 config = configparser.ConfigParser()
 config.read('config.ini')
 VOID_TYPE = str(config["DEFAULT"]["VOID_TYPE"])
+DRY_RUN = str(config['DEFAULT']['DRY_RUN'])
 
 
 def check_config():
@@ -22,13 +23,13 @@ def check_config():
     Check the config entries are valid
     """
     # Immediately exit if someone hasn't set DRY_RUN properly
-    if str(config['DEFAULT']['DRY_RUN']) not in ("Enabled", "Disabled"):
+    if DRY_RUN not in ("Enabled", "Disabled"):
         print("Dry run needs to be set to Enabled or Disabled. Exiting...")
         sys.exit(1)
 
     # Check void type is supported, otherwise exit immediately
     if VOID_TYPE not in ("Invoices", "CreditNotes"):
-        print("Void type needs to be one of: Invoices, CreditNotes")
+        print("Void type needs to be Invoices or CreditNotes")
         sys.exit(1)
 
 
@@ -53,14 +54,14 @@ def get_token():
         print(f"Status Code: {token_res.status_code}")
 
 
-def open_csv_file():
+def open_csv_file(column_name="InvoiceNumber"):
     """
     Opens a .csv file and prints out invoice IDs
     """
     try:
         with open(config['DEFAULT']['CSV_FILENAME'], newline='') as csvfile:
             reader = csv.DictReader(csvfile)
-            return [row["InvoiceNumber"] for row in reader]
+            return [row[column_name] for row in reader]
 
     except Exception:
         print("Error: Please check your .csv file is named correctly and contains an InvoiceNumber column")
@@ -127,7 +128,7 @@ def void_invoice(token, invoice_number):
     if void_res.status_code == 200:
         print(f"Voided {invoice_number} successfully!")
     else:
-        print(f"Couldn't void {invoice_number}, please check there's no payments applied to it")
+        print(f"Couldn't void {invoice_number}, please check there's no payments applied to it and that it still exists in Xero")
         print(f"Status Code: {void_res.status_code}")
         print(void_res.json())
 
@@ -148,7 +149,7 @@ def main():
         invoice_ids = open_csv_file()
 
         # Safety mechanism for those wanting to check before committing
-        if config['DEFAULT']['DRY_RUN'] == "Enabled":
+        if DRY_RUN == "Enabled":
             print("Dry run is enabled, not voiding anything")
             print(f"Without Dry run we will void: \n{invoice_ids}")
         else:
@@ -158,11 +159,13 @@ def main():
             else:
                 print("Warning: The Xero API limit is 60 calls per minute. You are voiding less than 60 so we will blast through them.")
                 process_void_job(token, invoice_ids, all_at_once=True)
-        print("Exiting...")
-    except:
+    except Exception as err:
+        print(err)
         print("Encountered an error, exiting...")
 
 
 if __name__ == "__main__":
     print("Running bulk void tool...")
+    check_config()
     main()
+    print("Exiting...")
