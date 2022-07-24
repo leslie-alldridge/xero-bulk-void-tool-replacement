@@ -1,0 +1,5 @@
+[DEFAULT]
+CLIENT_ID = enter_your_id_here
+CLIENT_SECRET = enter_your_secret_here
+CSV_FILENAME = invoices.csv
+DRY_RUN = Enabled
