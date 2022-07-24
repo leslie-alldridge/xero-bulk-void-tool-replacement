@@ -14,9 +14,12 @@ XERO_TOKEN_URL = "https://identity.xero.com/connect/token"
 # Read in the config.ini file
 config = configparser.ConfigParser()
 config.read('config.ini')
-VOID_TYPE = str(config["DEFAULT"]["VOID_TYPE"])
-DRY_RUN = str(config['DEFAULT']['DRY_RUN'])
-
+try:
+    VOID_TYPE = str(config["DEFAULT"]["VOID_TYPE"])
+    DRY_RUN = str(config['DEFAULT']['DRY_RUN'])
+except KeyError:
+    print("Please check your file is named config.ini - we couldn't find it")
+    sys.exit(1)
 
 def check_config():
     """
@@ -160,8 +163,7 @@ def main():
                 print("Warning: The Xero API limit is 60 calls per minute. You are voiding less than 60 so we will blast through them.")
                 process_void_job(token, invoice_ids, all_at_once=True)
     except Exception as err:
-        print(err)
-        print("Encountered an error, exiting...")
+        print(f"Encountered an error: {str(err)}")
 
 
 if __name__ == "__main__":
