@@ -4,7 +4,9 @@ import json
 import requests
 import sys
 import time
+
 from requests.auth import HTTPBasicAuth
+
 
 # URL used to obtain tokens from Xero
 XERO_TOKEN_URL = "https://identity.xero.com/connect/token"
@@ -12,17 +14,22 @@ XERO_TOKEN_URL = "https://identity.xero.com/connect/token"
 # Read in the config.ini file
 config = configparser.ConfigParser()
 config.read('config.ini')
-
-# Bail out if someone hasn't set DRY_RUN properly
-if str(config['DEFAULT']['DRY_RUN']) not in ("Enabled", "Disabled"):
-    print("Dry run needs to be set to Enabled or Disabled. Exiting...")
-    sys.exit(1)
-
-# Check void type is supported
 VOID_TYPE = str(config["DEFAULT"]["VOID_TYPE"])
-if VOID_TYPE not in ("Invoices", "CreditNotes"):
-    print("Void type needs to be one of: Invoices, CreditNotes")
-    sys.exit(1)
+
+
+def check_config():
+    """
+    Check the config entries are valid
+    """
+    # Immediately exit if someone hasn't set DRY_RUN properly
+    if str(config['DEFAULT']['DRY_RUN']) not in ("Enabled", "Disabled"):
+        print("Dry run needs to be set to Enabled or Disabled. Exiting...")
+        sys.exit(1)
+
+    # Check void type is supported, otherwise exit immediately
+    if VOID_TYPE not in ("Invoices", "CreditNotes"):
+        print("Void type needs to be one of: Invoices, CreditNotes")
+        sys.exit(1)
 
 
 def get_token():
