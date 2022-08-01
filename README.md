@@ -63,8 +63,7 @@ Other config options:
 2. Click `export` and rename the downloaded .csv file to be `invoices.csv` (if you choose a different name, edit `config.ini` so the names match)
 3. Put the file in the same folder as this `README.md` file
 4. Run the tool by going:
-    - `pip3 install -r ./requrements.txt`
-    - `python3 app.py`
+    - `python3 app.py` or `python app.py` depending on your system
 
 ## What happened to the old bulk voiding app?
 
