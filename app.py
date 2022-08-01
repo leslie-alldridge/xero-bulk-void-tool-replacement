@@ -149,7 +149,7 @@ def main():
         # Note: You MUST use a file named invoices.csv
         # The file MUST have a column named InvoiceNumber
         # Refer to README.md for examples
-        invoice_ids = open_csv_file()
+        invoice_ids = set(open_csv_file())
 
         # Safety mechanism for those wanting to check before committing
         if DRY_RUN == "Enabled":
