@@ -22,7 +22,7 @@ If you are outside those regions please email Xero and ask them to add your regi
 
 ## Instructions
 
-Please refer to my YouTube video [here]() or follow the step by step instructions below:
+Please refer to my YouTube video [here](https://www.youtube.com/watch?v=xDDd6FuYVG4) or follow the step by step instructions below:
 
 ### Set up a Custom Connection via Xero
 
