@@ -49,6 +49,8 @@ They might have their own steps online somewhere, but here's what I did anyway
 1. Copy paste your client id and client secret from Xero into `config.ini` it should look like this (Note: I've deleted my app so you won't be able to use the example ID or Secret below)
 ![example](./images/example.png)
 
+2. Run this command in your terminal `pip install requests` or for those on Macbook it may be `pip3 install requests`.
+
 Now the tool is ready to Run!
 
 Other config options:
